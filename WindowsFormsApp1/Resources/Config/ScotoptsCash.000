@@ -1,0 +1,182 @@
+[Tender]
+;AllowCoupons - A=All modes, O=Only in assist mode (NOT ZERO), N=No modes TAR#102019
+AllowCoupons=A
+CashAllowed=Y
+CreditAllowed=Y
+
+[State]
+;Basic Assist Menu options
+;Access assisted sales menu from store mode Assist button (Default = N)
+AssistMenuFromStoreModeAllowed=Y
+;Access Basic Assist Menu from RAP Assist button (Default = N)
+AssistMenuFromRAPAllowed=Y
+AllowLoyaltyCard=Y
+LoyaltyCardReminder=Y
+LoyaltyCardReminderAfterFirstItemSold=Y
+;RFQ-8857
+SayPrices=N
+CouponSensor=N
+Suspend=Y
+
+SingleLanguageButtonAtAttract=Y
+DualLanguage=Y
+;RFQ-8857
+
+Language1=0816,1286,msg0816.dat,TARE0816.DAT,UNUSED,TEND0816.DAT,PRICESOUNDCONFIG0816.DAT
+Language2=UK,1286,MSGUK.DAT,TAREUK.DAT,UNUSED,TENDUK.DAT,PRICESOUNDCONFIGUKEU.DAT
+
+;Set this option to 'Y' to allow changing language during transactions
+AllowLanguageSelectionDuringTransaction=Y
+
+;Startup Options
+;Fastlane will go to LaneClosed screen when started. Otherwise startup will go to the Attract screen
+StartupToLaneClosed=Y
+;StartupWaitForTB = Y --> Fastlane expects TB_LANECLOSED or TB_LANEOPEN from TB for close/open
+StartupWaitForTB=Y
+
+;RFQ-8857
+
+SecurityDisableAllowed=Y
+
+[Operations]
+AllowSMMKeyInCode=Y
+PrintReceiptOnCancelledTransaction=N
+SigaOnlyMode=N
+SigaOptional=Y
+PrintVersion=N
+; Added by Jaromir
+ShowItemRemovedButtonOnRemoveItemViolationScreen=N
+;(+)RFQ-8857
+DisableBasePriceEmbeddedDefinitions=Y
+;At Bag Item, allow <Skip Bagging> btn, Y/N.
+AllowSkipBaggingBtn=N
+EnableMSRDegradedModeCashOnly=N
+;SCOT functional options
+EnablePartialCut=Y
+;At Unexpected Weight Increasing Alert, allow <Bag/Box> btn, Y/N.
+AllowContainerBtn=Y
+AltF4ExitAllowed=Y
+;Pick& Mix Options
+;Option to display new mulitiselect context for picklist items sold with a receipt and no bagging required
+AllowMultiPick=N
+;Option to display picklist item code
+DisplayPickListItemCode=N
+;SR742 begin
+;Turning on this option will allow customers to go into degraded mode of operations
+;This option remains N by default whether the lane is configured for cash devices or not.
+AllowDegradedMode=Y
+
+;(+) SR898 ====================
+;Tri-Color Light Override Options
+;this makes the Tri-Color Light Color to Green in Attract Screen
+;and makes 'in-transaction' Tri-Color Light to "Off"
+;Defaults to “N” [Not Enabled]
+InvertLightStates = Y
+;(-) SR898 ====================
+
+;When set to Y, TakeChange screen will be bypass if there are no bills change.
+;Default = Y.
+TakeChangeBypassedIfNoBills=N
+ShowSkipBaggingOnEReceipt=Y
+DisplayQuickPickItems=Y
+;Option to display sub categories instead of main categories in Picklist tab
+DisplayPickListSubCategoriesInTab=N
+
+
+
+OperatorLoginBarcodeType=2
+AllowLeadingZerosInCode128LoginBarCode=Y
+OperatorBarcodeMask=412uuuuuuuuuppppppppp
+
+
+;************************************************************
+
+ScaleMetric=Y
+;Hold Receipt until in designated state;
+;Default is NonInterventionState means hold receipt if in an intervention state
+;"Any" or null will start the receipt printing immediately, will generate the receipt as soon as the TB_CLOSED is received.
+;"SMTakeChange", hold printing receipt until SMTakeChange State - print receipt when is Change dispensed.
+;"SMTakeReceipt", hold printing receipt until SMTakeReceipt state  which is after Change is dispensed.
+;EOTReceiptPrintingState=SMTakeReceipt
+;EOTReceiptPrintingState=SMTakeChange
+EOTReceiptPrintingState=Any
+;EOTReceiptPrintingState=SMTakeReceipt
+;(-)RFQ-8857 
+
+;SR085 - This option allows the display of "I brought my own bag" bttn on Attract. Default is N.
+CustomerBagAllowed=Y
+;Option to display picklist items/categories on Scan & Bag
+DisplayQuickPickItems=Y
+SelectTareOnWeight=N
+
+;Option for gift card tendering
+;0 - no gift card, 1 - scanned gift card, 2 - swiped gift card
+GiftCardRedemption=2
+MethodOfCollectionForEmptyGiftCard=0
+DisplayGiftCardBalance=N
+
+;Option for display of gift card balance
+;Y - display gift card balance, N - dont display gift card balance
+DisplayGiftCardBalance=N
+
+;Check the Cash Changer's status at attract screen. N is the Default value.
+CheckCashChanger=N
+
+; This option if set to Y will display the Volume control button in Attract screen
+ShowVolumeControl=Y
+
+[Locale]
+DisplayCashManagementAtRAP=N
+IsTaxLine=N
+LeaveCashAcceptorsEnabledDuringTransaction=N
+DisableCashAcceptorsDuringItemization=Y
+; Data files
+[Data]
+MessageFile=MSG0816
+TenderFile=TEND0816
+TareFile=TARE0816
+
+
+;******************* Enable Weight Embedded Barcodes ********************************************************************
+;This section is used to allow the store to Zero-out the variable part
+;of In-Store barcodes before sending it to Security Agent. It allows Security Agent to keep
+;from populating the WLDB with Barcodes whose item numbers are constant, but the rest
+;of the barcode varies because of weight, week/month ...
+;the In-Store barcodes are expected to be in the format : xxiiiippppp or xxiiiivppppc
+;where xx represents the barcode prefix "24" for example, iiii represents the item code
+;"1234567" for example, and ppppp represents the variable part of the barcode that should be
+;zeroed-out before being sent to Security Agent, "v" can be a verifier of some type,
+;"c" is the checksum. In any case, the variable part "pppp", the verifier "v"(if present), the
+;checksum "c"(if present) of a barcode matching a pattern defined in [InStoreBarcodes] will be replaced
+;by zeroes for Security Agent only.
+;A field to identify this barcode as price embedded can be added to the pattern by appending a ",Y" to the pattern.
+;Note there is no limit on the number of custom codes that can be defined, but it is required that
+;they are kept in sequence: customcode1, customcode2, customcode3....
+
+[InStoreBarcodes]
+;CustomCode1=25iiiippppppc,Y
+;CustomCode2=26iiiippppppc,Y
+;CustomCode3=28iiiippppppc,Y
+;CustomCode4=27iiiiipppppc,Y
+;CustomCode5=29iiiivpppppc,Y
+;Sample with Price Embedded field set to Y
+;CustomCode1=21iiiippppppc,Y
+
+[CM]
+; if 'RewardInfo' is set to 'N', no other options in this section will be considered
+RewardInfo=Y
+CustomerMessage=775
+TotalSavings=N
+TotalRewardPoints=N
+; Set below option to 'N' to make TotalSavings appear on right side of reward_info bar
+TotalSavingsOnLeft=N
+
+[DepartmentWeightTolerances]
+1201=20,3
+1202=20,3
+1203=20,3
+1101=20,3
+1102=20,3
+1103=20,3
+1104=20,3
+1105=20,3
